@@ -1,23 +1,25 @@
 #!/bin/bash
 
 usage() {
-  echo -e "Usage: $0 [options...] <script> <key> \n\
+  echo -e "Usage: $0 [options...] <path_to_script> \n\
  -h, --help          Display help
  -o, --output <path> Output path where to save results \n\
- -f, --format        Specifies the format of the command's output (pretty, sparse, prettyjson, json, csv). \n\
+ -f, --format        Specifies the format of the command's output. [pretty|sparse|prettyjson|json|csv] (default=pretty). \n\
+ -n, --max           The number of rows to return in the query results. (default=100). \n\
  -V, --verbose       Make the operation more talkative" 1>&2
   exit 1
 }
 
 output=""
 verbose=0
+max=100
 format="pretty"
 
 # $@ is all command line parameters passed to the script.
 # -o is for short options like -v
 # -l is for long options with double dash like --version
 # the comma separates different long options
-options=$(getopt -l "help,verbose,output:,format:" -o "hVf:o:" -- "$@")
+options=$(getopt -l "help,verbose,max:,output:,format:" -o "hVn:f:o:" -- "$@")
 
 # set --:
 # If no arguments follow this option, then the positional parameters are unset. Otherwise, the positional parameters
@@ -31,6 +33,9 @@ while true; do
     ;;
   -V | --verbose)
     verbose=1
+    ;;
+  -n | --max)
+    max=$2
     ;;
   -f | --format)
     format=$2
@@ -80,7 +85,7 @@ if [ "$verbose" == 1 ]; then
   echo
 fi
 
-bq query --use_legacy_sql=false --format=$format "$sql" |
+bq query --max_rows=$max --use_legacy_sql=false --format=$format "$sql" |
   if [ ! -z "$output" ]; then
     tee 1>>$output 2>&1
   else

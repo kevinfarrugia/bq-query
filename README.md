@@ -11,6 +11,7 @@ BigQuery queries may be executed from the [Cloud console](https://console.cloud.
 - Confirm that you have a supported version of Python. The Google Cloud CLI requires Python 3 (3.5 to 3.8, 3.7 recommended) and Python 2 (2.7.9 or higher).
 - Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
 - Initialize the glcoud CLI, login to your Google account and pick your cloud project.
+
 ```
 ./google-cloud-sdk/bin/gcloud init
 ```
@@ -18,8 +19,22 @@ BigQuery queries may be executed from the [Cloud console](https://console.cloud.
 ## Usage
 
 ```sh
-$ ./bq-query test/test.sql
+Usage: ./bq-query [options...] <path_to_script> 
+ -h, --help          Display help
+ -o, --output <path> Output path where to save results 
+ -f, --format        Specifies the format of the command's output. [pretty|sparse|prettyjson|json|csv] (default=pretty). 
+ -n, --max           The number of rows to return in the query results. (default=100). 
+ -V, --verbose       Make the operation more talkative
+```
 
+**Simple usage:**
+```sh
+$ ./bq-query test/test.sql
+```
+
+Outputs:
+
+```
 +---------------+-------+
 |     word      | count |
 +---------------+-------+
@@ -32,13 +47,14 @@ $ ./bq-query test/test.sql
 +---------------+-------+
 ```
 
-**Save results to file:**
+**Save results to CSV file:**
 
 ```sh
 $ ./bq-query test/test.sql --output ./results.csv --format=csv
 ```
 
 See help for usage instructions.
+
 ```sh
 ./bq-query --help
 ```
