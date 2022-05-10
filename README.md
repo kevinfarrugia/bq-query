@@ -48,13 +48,13 @@ $ ./bq-query test/test.sql
 +---------------+-------+
 ```
 
-### Save results to CSV file:\*\*
+### Save results to CSV file:
 
 ```sh
 $ ./bq-query test/test.sql --output ./results.csv --format=csv --max=10000
 ```
 
-### See help for usage instructions.\*\*
+### See help for usage instructions.
 
 ```sh
 ./bq-query --help
