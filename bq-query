@@ -1,0 +1,96 @@
+#!/bin/bash
+
+usage() {
+  echo -e "Usage: $0 [options...] <script> <key> \n\
+ -h, --help          Display help
+ -o, --output <path> Output path where to save results \n\
+ -f, --format        Specifies the format of the command's output (pretty, sparse, prettyjson, json, csv). \n\
+ -V, --verbose       Make the operation more talkative" 1>&2
+  exit 1
+}
+
+output=""
+verbose=0
+format="pretty"
+
+# $@ is all command line parameters passed to the script.
+# -o is for short options like -v
+# -l is for long options with double dash like --version
+# the comma separates different long options
+options=$(getopt -l "help,verbose,output:,format:" -o "hVf:o:" -- "$@")
+
+# set --:
+# If no arguments follow this option, then the positional parameters are unset. Otherwise, the positional parameters
+# are set to the arguments, even if some of them begin with a ‘-’.
+eval set -- "$options"
+
+while true; do
+  case $1 in
+  -h | --help)
+    usage
+    ;;
+  -V | --verbose)
+    verbose=1
+    ;;
+  -f | --format)
+    format=$2
+    ;;
+  -o | --output)
+    output=$2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+  shift
+done
+
+script=$1
+
+if [ -z "$script" ]; then
+  usage
+fi
+
+sql=$(<$script)
+
+if [ "$verbose" == 1 ]; then
+  echo -e "Running bq query on $script"
+  echo -e "...\n"
+fi
+
+if [ -f "$output" ]; then
+  read -p "Output file exists. Overwrite? (y/N) " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Nn]$ ]] || [[ -z $REPLY ]]; then
+    exit
+  fi
+fi
+
+if [ ! -z "$output" ]; then
+  if [ "$verbose" == 1 ]; then
+    echo "Overwriting contents in $output"
+    echo
+  fi
+  > $output
+fi
+
+if [ "$verbose" == 1 ]; then
+  echo -e "bq query --use_legacy_sql=false --format=$format \n\"$sql\""
+  echo
+fi
+
+bq query --use_legacy_sql=false --format=$format "$sql" |
+  if [ ! -z "$output" ]; then
+    tee 1>>$output 2>&1
+  else
+    cat
+  fi
+
+if [ ! -z "$output" ] && [ "$verbose" == 1 ]; then
+  echo -e "Saved results to $output\n"
+fi
+
+if [ "$verbose" == 1 ]; then
+  echo "Done."
+fi
