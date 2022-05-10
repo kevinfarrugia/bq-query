@@ -18,7 +18,7 @@ BigQuery queries may be executed from the [Cloud console](https://console.cloud.
 
 ## Usage
 
-```sh
+```
 Usage: ./bq-query [options...] <path_to_script> 
  -h, --help          Display help
  -o, --output <path> Output path where to save results 
