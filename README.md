@@ -19,20 +19,21 @@ BigQuery queries may be executed from the [Cloud console](https://console.cloud.
 ## Usage
 
 ```
-Usage: ./bq-query [options...] <path_to_script> 
+Usage: ./bq-query [options...] <path_to_script>
  -h, --help          Display help
- -o, --output <path> Output path where to save results 
- -f, --format        Specifies the format of the command's output. [pretty|sparse|prettyjson|json|csv] (default=pretty). 
- -n, --max           The number of rows to return in the query results. (default=100). 
+ -o, --output <path> Output path where to save results
+ -f, --format        Specifies the format of the command's output. [pretty|sparse|prettyjson|json|csv] (default=pretty).
+ -n, --max           The number of rows to return in the query results. (default=100).
  -V, --verbose       Make the operation more talkative
 ```
 
-**Simple usage:**
+### Simple usage
+
 ```sh
 $ ./bq-query test/test.sql
 ```
 
-Outputs:
+**Output**
 
 ```
 +---------------+-------+
@@ -47,13 +48,13 @@ Outputs:
 +---------------+-------+
 ```
 
-**Save results to CSV file:**
+### Save results to CSV file:\*\*
 
 ```sh
-$ ./bq-query test/test.sql --output ./results.csv --format=csv
+$ ./bq-query test/test.sql --output ./results.csv --format=csv --max=10000
 ```
 
-**See help for usage instructions.**
+### See help for usage instructions.\*\*
 
 ```sh
 ./bq-query --help
