@@ -53,7 +53,7 @@ Outputs:
 $ ./bq-query test/test.sql --output ./results.csv --format=csv
 ```
 
-See help for usage instructions.
+**See help for usage instructions.**
 
 ```sh
 ./bq-query --help
