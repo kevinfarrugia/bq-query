@@ -73,8 +73,10 @@ if [ -f "$output" ]; then
   > $output
 fi
 
-if [ ! -f "$output" ]; then
-  touch $output
+if [ -z "script" ]; then
+  if [ ! -f "$output" ]; then
+    touch $output
+  fi
 fi
 
 if [ ! -z "$output" ]; then
