@@ -53,6 +53,9 @@ done
 
 script=$1
 
+project=$(gcloud config get project)
+echo -e "Using project: $project"
+
 if [ -z "$script" ]; then
   usage
 fi
