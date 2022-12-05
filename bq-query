@@ -15,45 +15,50 @@ verbose=0
 max=100
 format="pretty"
 
-# $@ is all command line parameters passed to the script.
-# -o is for short options like -v
-# -l is for long options with double dash like --version
-# the comma separates different long options
-options=$(getopt -l "help,verbose,max:,output:,format:" -o "hVn:f:o:" -- "$@")
-
-# set --:
-# If no arguments follow this option, then the positional parameters are unset. Otherwise, the positional parameters
-# are set to the arguments, even if some of them begin with a ‘-’.
-eval set -- "$options"
-
-while true; do
+while [[ $# -gt 0 ]]; do
   case $1 in
   -h | --help)
     usage
+    shift
     ;;
   -V | --verbose)
     verbose=1
+    shift
     ;;
   -n | --max)
     max=$2
+    shift 2
     ;;
   -f | --format)
     format=$2
+    shift 2
     ;;
   -o | --output)
     output=$2
+    shift 2
     ;;
-  --)
+  *)
+    script=$1
     shift
     break
     ;;
   esac
-  shift
 done
 
-script=$1
+login=$(gcloud config get account)
+
+if [ -z "$login" ]; then
+  echo "Not logged in. Please login with 'gcloud auth login'"
+  exit 1
+fi
 
 project=$(gcloud config get project)
+
+if [ -z "$project" ]; then
+  echo "No project set. Please set a project using 'gcloud config set project <PROJECT_ID>'"
+  exit 1
+fi
+
 echo -e "Using project: $project"
 
 if [ -z "$script" ]; then
